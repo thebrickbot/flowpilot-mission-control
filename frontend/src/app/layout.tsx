@@ -3,31 +3,34 @@ import "./globals.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-import { DM_Serif_Display, IBM_Plex_Sans, Sora } from "next/font/google";
+import { Space_Grotesk, DM_Serif_Display } from "next/font/google";
 
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { GlobalLoader } from "@/components/ui/global-loader";
 
 export const metadata: Metadata = {
-  title: "OpenClaw Mission Control",
-  description: "A calm command center for every task.",
+  title: "FlowPilot Mission Control",
+  description: "A calm command center for every AI workflow.",
 };
 
-const bodyFont = IBM_Plex_Sans({
+// Space Grotesk — primary UI font (body + headings)
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-body",
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const headingFont = Sora({
+// Space Grotesk also drives headings (consistent brand feel)
+const headingFont = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-heading",
   weight: ["500", "600", "700"],
 });
 
+// DM Serif Display — display / editorial use only
 const displayFont = DM_Serif_Display({
   subsets: ["latin"],
   display: "swap",
@@ -39,7 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${bodyFont.variable} ${headingFont.variable} ${displayFont.variable} min-h-screen bg-app text-strong antialiased`}
+        className={`${spaceGrotesk.variable} ${headingFont.variable} ${displayFont.variable} min-h-screen bg-app text-strong antialiased`}
       >
         <AuthProvider>
           <QueryProvider>

@@ -57,38 +57,45 @@ export function DashboardSidebar() {
         ? "System status unavailable"
         : "System degraded";
 
+  // Active link: Forest background with Lime accent text
+  const activeClass =
+    "font-medium text-[#CDF765]";
+  const activeStyle = { background: "#2B4A44" };
+  const inactiveClass = "hover:bg-[#eef2f0] text-[#233136]";
+
+  const navLink = (href: string, exact = false) => {
+    const isActive = exact ? pathname === href : pathname.startsWith(href);
+    return cn(
+      "flex items-center gap-3 rounded-lg px-3 py-2.5 transition",
+      isActive ? activeClass : inactiveClass,
+    );
+  };
+
   return (
-    <aside className="flex h-full w-64 flex-col border-r border-slate-200 bg-white">
+    /* w-64 on normal screens; 3xl (≥2048px) → w-[300px] for ultrawide */
+    <aside className="flex h-full w-64 3xl:w-[300px] flex-col border-r border-[#d8e4dc] bg-white">
       <div className="flex-1 px-3 py-4">
-        <p className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <p className="px-3 text-xs font-semibold uppercase tracking-wider text-[#4a6060]">
           Navigation
         </p>
         <nav className="mt-3 space-y-4 text-sm">
           <div>
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-[#7a9898]">
               Overview
             </p>
             <div className="mt-1 space-y-1">
               <Link
                 href="/dashboard"
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                  pathname === "/dashboard"
-                    ? "bg-blue-100 text-blue-800 font-medium"
-                    : "hover:bg-slate-100",
-                )}
+                className={navLink("/dashboard", true)}
+                style={pathname === "/dashboard" ? activeStyle : undefined}
               >
                 <BarChart3 className="h-4 w-4" />
                 Dashboard
               </Link>
               <Link
                 href="/activity"
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                  pathname.startsWith("/activity")
-                    ? "bg-blue-100 text-blue-800 font-medium"
-                    : "hover:bg-slate-100",
-                )}
+                className={navLink("/activity")}
+                style={pathname.startsWith("/activity") ? activeStyle : undefined}
               >
                 <Activity className="h-4 w-4" />
                 Live feed
@@ -97,54 +104,38 @@ export function DashboardSidebar() {
           </div>
 
           <div>
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-[#7a9898]">
               Boards
             </p>
             <div className="mt-1 space-y-1">
               <Link
                 href="/board-groups"
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                  pathname.startsWith("/board-groups")
-                    ? "bg-blue-100 text-blue-800 font-medium"
-                    : "hover:bg-slate-100",
-                )}
+                className={navLink("/board-groups")}
+                style={pathname.startsWith("/board-groups") ? activeStyle : undefined}
               >
                 <Folder className="h-4 w-4" />
                 Board groups
               </Link>
               <Link
                 href="/boards"
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                  pathname.startsWith("/boards")
-                    ? "bg-blue-100 text-blue-800 font-medium"
-                    : "hover:bg-slate-100",
-                )}
+                className={navLink("/boards")}
+                style={pathname.startsWith("/boards") ? activeStyle : undefined}
               >
                 <LayoutGrid className="h-4 w-4" />
                 Boards
               </Link>
               <Link
                 href="/tags"
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                  pathname.startsWith("/tags")
-                    ? "bg-blue-100 text-blue-800 font-medium"
-                    : "hover:bg-slate-100",
-                )}
+                className={navLink("/tags")}
+                style={pathname.startsWith("/tags") ? activeStyle : undefined}
               >
                 <Tags className="h-4 w-4" />
                 Tags
               </Link>
               <Link
                 href="/approvals"
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                  pathname.startsWith("/approvals")
-                    ? "bg-blue-100 text-blue-800 font-medium"
-                    : "hover:bg-slate-100",
-                )}
+                className={navLink("/approvals")}
+                style={pathname.startsWith("/approvals") ? activeStyle : undefined}
               >
                 <CheckCircle2 className="h-4 w-4" />
                 Approvals
@@ -152,12 +143,8 @@ export function DashboardSidebar() {
               {isAdmin ? (
                 <Link
                   href="/custom-fields"
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                    pathname.startsWith("/custom-fields")
-                      ? "bg-blue-100 text-blue-800 font-medium"
-                      : "hover:bg-slate-100",
-                  )}
+                  className={navLink("/custom-fields")}
+                  style={pathname.startsWith("/custom-fields") ? activeStyle : undefined}
                 >
                   <Settings className="h-4 w-4" />
                   Custom fields
@@ -169,31 +156,27 @@ export function DashboardSidebar() {
           <div>
             {isAdmin ? (
               <>
-                <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-[#7a9898]">
                   Skills
                 </p>
                 <div className="mt-1 space-y-1">
                   <Link
                     href="/skills/marketplace"
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
+                    className={navLink("/skills/marketplace")}
+                    style={
                       pathname === "/skills" ||
-                        pathname.startsWith("/skills/marketplace")
-                        ? "bg-blue-100 text-blue-800 font-medium"
-                        : "hover:bg-slate-100",
-                    )}
+                      pathname.startsWith("/skills/marketplace")
+                        ? activeStyle
+                        : undefined
+                    }
                   >
                     <Store className="h-4 w-4" />
                     Marketplace
                   </Link>
                   <Link
                     href="/skills/packs"
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                      pathname.startsWith("/skills/packs")
-                        ? "bg-blue-100 text-blue-800 font-medium"
-                        : "hover:bg-slate-100",
-                    )}
+                    className={navLink("/skills/packs")}
+                    style={pathname.startsWith("/skills/packs") ? activeStyle : undefined}
                   >
                     <Boxes className="h-4 w-4" />
                     Packs
@@ -204,18 +187,14 @@ export function DashboardSidebar() {
           </div>
 
           <div>
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-[#7a9898]">
               Administration
             </p>
             <div className="mt-1 space-y-1">
               <Link
                 href="/organization"
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                  pathname.startsWith("/organization")
-                    ? "bg-blue-100 text-blue-800 font-medium"
-                    : "hover:bg-slate-100",
-                )}
+                className={navLink("/organization")}
+                style={pathname.startsWith("/organization") ? activeStyle : undefined}
               >
                 <Building2 className="h-4 w-4" />
                 Organization
@@ -223,12 +202,8 @@ export function DashboardSidebar() {
               {isAdmin ? (
                 <Link
                   href="/gateways"
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                    pathname.startsWith("/gateways")
-                      ? "bg-blue-100 text-blue-800 font-medium"
-                      : "hover:bg-slate-100",
-                  )}
+                  className={navLink("/gateways")}
+                  style={pathname.startsWith("/gateways") ? activeStyle : undefined}
                 >
                   <Network className="h-4 w-4" />
                   Gateways
@@ -237,12 +212,8 @@ export function DashboardSidebar() {
               {isAdmin ? (
                 <Link
                   href="/agents"
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition",
-                    pathname.startsWith("/agents")
-                      ? "bg-blue-100 text-blue-800 font-medium"
-                      : "hover:bg-slate-100",
-                  )}
+                  className={navLink("/agents")}
+                  style={pathname.startsWith("/agents") ? activeStyle : undefined}
                 >
                   <Bot className="h-4 w-4" />
                   Agents
@@ -252,8 +223,8 @@ export function DashboardSidebar() {
           </div>
         </nav>
       </div>
-      <div className="border-t border-slate-200 p-4">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+      <div className="border-t border-[#d8e4dc] p-4">
+        <div className="flex items-center gap-2 text-xs text-[#4a6060]">
           <span
             className={cn(
               "h-2 w-2 rounded-full",

@@ -208,25 +208,31 @@ function KpiCard({
   progress?: number;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <div className="rounded-xl border bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      style={{ borderColor: "#d8e4dc" }}>
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <p className="text-xs font-semibold uppercase tracking-wider"
+          style={{ color: "#4a6060" }}>
           {label}
         </p>
-        <div className="rounded-lg bg-blue-50 p-2 text-blue-600">{icon}</div>
+        {/* Forest icon badge */}
+        <div className="rounded-lg p-2" style={{ background: "#2B4A44", color: "#CDF765" }}>
+          {icon}
+        </div>
       </div>
       <div className="flex items-end gap-2">
-        <h3 className="font-heading text-4xl font-bold text-slate-900">
+        <h3 className="font-heading text-4xl font-bold" style={{ color: "#233136" }}>
           {value}
         </h3>
       </div>
       {sublabel ? (
-        <p className="mt-2 text-xs text-slate-500">{sublabel}</p>
+        <p className="mt-2 text-xs" style={{ color: "#4a6060" }}>{sublabel}</p>
       ) : null}
-      <div className="mt-3 h-1 overflow-hidden rounded-full bg-slate-100">
+      {/* Lime progress bar */}
+      <div className="mt-3 h-1 overflow-hidden rounded-full" style={{ background: "#eef2f0" }}>
         <div
-          className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-600"
-          style={{ width: `${progress}%` }}
+          className="h-full rounded-full"
+          style={{ width: `${progress}%`, background: "#CDF765" }}
         />
       </div>
     </div>
@@ -243,13 +249,13 @@ function ChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-xl border bg-white p-6 shadow-sm" style={{ borderColor: "#d8e4dc" }}>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h3 className="font-heading text-base font-semibold text-slate-900">
+          <h3 className="font-heading text-base font-semibold" style={{ color: "#233136" }}>
             {title}
           </h3>
-          <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+          <p className="mt-1 text-sm" style={{ color: "#4a6060" }}>{subtitle}</p>
         </div>
       </div>
       <div className="h-56">{children}</div>
@@ -436,15 +442,15 @@ export default function DashboardPage() {
       </SignedOut>
       <SignedIn>
         <DashboardSidebar />
-        <main className="flex-1 overflow-y-auto bg-slate-50">
-          <div className="border-b border-slate-200 bg-white px-8 py-6">
+        <main className="flex-1 overflow-y-auto" style={{ background: "#f5f7f6" }}>
+          <div className="border-b bg-white px-8 py-6" style={{ borderColor: "#d8e4dc" }}>
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h2 className="font-heading text-2xl font-semibold text-slate-900 tracking-tight">
+                <h2 className="font-heading text-2xl font-semibold tracking-tight" style={{ color: "#233136" }}>
                   Dashboard
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  Monitor your mission control operations
+                <p className="mt-1 text-sm" style={{ color: "#4a6060" }}>
+                  Monitor your FlowPilot operations
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-end gap-3">
@@ -460,7 +466,7 @@ export default function DashboardPage() {
                   ariaLabel="Dashboard date range"
                   placeholder="Select range"
                   searchEnabled={false}
-                  triggerClassName="h-9 min-w-[150px] rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  triggerClassName="h-9 min-w-[150px] rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 shadow-sm focus:border-[#2B4A44] focus:ring-2 focus:ring-[#C7DCCD]"
                   contentClassName="rounded-lg border border-slate-200"
                 />
                 <DropdownSelect
@@ -490,7 +496,7 @@ export default function DashboardPage() {
                   options={boardGroupOptions}
                   ariaLabel="Dashboard board group filter"
                   placeholder="All groups"
-                  triggerClassName="h-9 min-w-[170px] rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  triggerClassName="h-9 min-w-[170px] rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 shadow-sm focus:border-[#2B4A44] focus:ring-2 focus:ring-[#C7DCCD]"
                   contentClassName="rounded-lg border border-slate-200"
                   searchEnabled={false}
                   disabled={boardGroupsQuery.isLoading}
@@ -511,7 +517,7 @@ export default function DashboardPage() {
                   options={boardOptions}
                   ariaLabel="Dashboard board filter"
                   placeholder="All boards"
-                  triggerClassName="h-9 min-w-[170px] rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  triggerClassName="h-9 min-w-[170px] rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 shadow-sm focus:border-[#2B4A44] focus:ring-2 focus:ring-[#C7DCCD]"
                   contentClassName="rounded-lg border border-slate-200"
                   searchEnabled={false}
                   disabled={boardsQuery.isLoading || boardOptions.length <= 1}
@@ -550,7 +556,8 @@ export default function DashboardPage() {
 
             {metrics ? (
               <>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {/* KPI grid: 1 → 2 → 4 → 6 (ultrawide 3xl) → 8 (4k/uw) columns */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 3xl:grid-cols-6 uw:grid-cols-8">
                   <KpiCard
                     label="Active agents"
                     value={formatNumber(metrics.kpis.active_agents)}
@@ -577,7 +584,8 @@ export default function DashboardPage() {
                   />
                 </div>
 
-                <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                {/* Chart grid: 1 → 2 → 3-up on ultrawide (3xl) */}
+                <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2 3xl:grid-cols-3">
                   <ChartCard title="Completed Tasks" subtitle="Throughput">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
@@ -616,7 +624,7 @@ export default function DashboardPage() {
                         <Bar
                           dataKey="value"
                           name="Completed"
-                          fill="#2563eb"
+                          fill="#2B4A44"
                           radius={[6, 6, 0, 0]}
                         />
                       </BarChart>
@@ -664,7 +672,7 @@ export default function DashboardPage() {
                           type="monotone"
                           dataKey="value"
                           name="Hours"
-                          stroke="#1d4ed8"
+                          stroke="#2B4A44"
                           strokeWidth={2}
                           dot={false}
                         />
@@ -711,7 +719,7 @@ export default function DashboardPage() {
                           type="monotone"
                           dataKey="value"
                           name="Error rate"
-                          stroke="#1e40af"
+                          stroke="#233136"
                           strokeWidth={2}
                           dot={false}
                         />
@@ -771,8 +779,8 @@ export default function DashboardPage() {
                           dataKey="in_progress"
                           name="In progress"
                           stackId="wip"
-                          fill="#bfdbfe"
-                          stroke="#1d4ed8"
+                          fill="#C7DCCD"
+                          stroke="#2B4A44"
                           fillOpacity={0.8}
                         />
                         <Area

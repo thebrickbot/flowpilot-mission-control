@@ -70,8 +70,16 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-app text-strong">
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white shadow-sm">
-        <div className="grid grid-cols-[260px_1fr_auto] items-center gap-0 py-3">
+      {/* Header — FlowPilot Mountain brand bar */}
+      <header
+        className="sticky top-0 z-40 border-b shadow-sm"
+        style={{ background: "#233136", borderColor: "#1a2830" }}
+      >
+        {/*
+          Grid: sidebar-width column | flex org switcher | user controls
+          Normal: 260px sidebar → 3xl (≥2048px ultrawide): 300px sidebar
+        */}
+        <div className="grid grid-cols-[260px_1fr_auto] 3xl:grid-cols-[300px_1fr_auto] items-center gap-0 py-3">
           <div className="flex items-center px-6">
             <BrandMark />
           </div>
@@ -85,17 +93,28 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <SignedIn>
             <div className="flex items-center gap-3 px-6">
               <div className="hidden text-right lg:block">
-                <p className="text-sm font-semibold text-slate-900">
+                <p className="text-sm font-semibold" style={{ color: "#CDF765" }}>
                   {displayName}
                 </p>
-                <p className="text-xs text-slate-500">Operator</p>
+                <p className="text-xs" style={{ color: "#C7DCCD" }}>
+                  Operator
+                </p>
               </div>
               <UserMenu displayName={displayName} displayEmail={displayEmail} />
             </div>
           </SignedIn>
         </div>
       </header>
-      <div className="grid min-h-[calc(100vh-64px)] grid-cols-[260px_1fr] bg-slate-50">
+
+      {/*
+        Main layout:
+        - Normal:    sidebar 260px + content
+        - Ultrawide (3xl ≥2048px): sidebar 300px + content
+      */}
+      <div
+        className="grid min-h-[calc(100vh-64px)] grid-cols-[260px_1fr] 3xl:grid-cols-[300px_1fr]"
+        style={{ background: "#f5f7f6" }}
+      >
         {children}
       </div>
     </div>

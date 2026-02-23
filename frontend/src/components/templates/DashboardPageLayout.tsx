@@ -66,24 +66,33 @@ export function DashboardPageLayout({
         <DashboardSidebar />
         <main
           ref={mainRef}
-          className={cn("flex-1 overflow-y-auto bg-slate-50", mainClassName)}
+          className={cn("flex-1 overflow-y-auto", mainClassName)}
+          style={{ background: "#f5f7f6" }}
         >
           <div
             className={cn(
-              "border-b border-slate-200 bg-white",
+              "border-b bg-white",
               stickyHeader && "sticky top-0 z-30",
               headerClassName,
             )}
+            style={{ borderColor: "#d8e4dc" }}
           >
-            <div className="px-8 py-6">
+            {/*
+              Content width: capped at max-w-uw (2560px) on very wide displays
+              so long content lines don't stretch across all 5120px.
+            */}
+            <div className="px-8 py-6 max-w-uw mx-auto">
               {headerActions ? (
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <h1 className="font-heading text-2xl font-semibold tracking-tight text-slate-900">
+                    <h1
+                      className="font-heading text-2xl font-semibold tracking-tight"
+                      style={{ color: "#233136" }}
+                    >
                       {title}
                     </h1>
                     {description ? (
-                      <p className="mt-1 text-sm text-slate-500">
+                      <p className="mt-1 text-sm" style={{ color: "#4a6060" }}>
                         {description}
                       </p>
                     ) : null}
@@ -92,18 +101,23 @@ export function DashboardPageLayout({
                 </div>
               ) : (
                 <div>
-                  <h1 className="font-heading text-2xl font-semibold tracking-tight text-slate-900">
+                  <h1
+                    className="font-heading text-2xl font-semibold tracking-tight"
+                    style={{ color: "#233136" }}
+                  >
                     {title}
                   </h1>
                   {description ? (
-                    <p className="mt-1 text-sm text-slate-500">{description}</p>
+                    <p className="mt-1 text-sm" style={{ color: "#4a6060" }}>
+                      {description}
+                    </p>
                   ) : null}
                 </div>
               )}
             </div>
           </div>
 
-          <div className={cn("p-8", contentClassName)}>
+          <div className={cn("p-8 max-w-uw mx-auto", contentClassName)}>
             {showAdminOnlyNotice ? (
               <AdminOnlyNotice message={adminOnlyMessage ?? ""} />
             ) : (

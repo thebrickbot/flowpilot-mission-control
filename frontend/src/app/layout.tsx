@@ -12,6 +12,9 @@ import { GlobalLoader } from "@/components/ui/global-loader";
 export const metadata: Metadata = {
   title: "FlowPilot Mission Control",
   description: "A calm command center for every AI workflow.",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 // Space Grotesk — primary UI font (body + headings)

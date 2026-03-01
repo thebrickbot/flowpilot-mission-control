@@ -87,7 +87,7 @@ export function BoardGroupsTable({
     const baseColumns: ColumnDef<BoardGroupRead>[] = [
       {
         accessorKey: "name",
-        header: "Group",
+        header: "Workstream",
         cell: ({ row }) =>
           linkifyCell({
             href: `/board-groups/${row.original.id}`,

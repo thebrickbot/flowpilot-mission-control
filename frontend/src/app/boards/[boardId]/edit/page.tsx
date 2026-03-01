@@ -854,7 +854,7 @@ export default function EditBoardPage() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-900">
-                  Board group
+                  Workstream
                 </label>
                 <SearchableSelect
                   ariaLabel="Select board group"

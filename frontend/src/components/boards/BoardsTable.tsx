@@ -113,7 +113,7 @@ export function BoardsTable({
           if (!groupId) return "";
           return groupById.get(groupId)?.name ?? groupId;
         },
-        header: "Group",
+        header: "Workstream",
         cell: ({ row }) => {
           const groupId = row.original.board_group_id;
           if (!groupId) {

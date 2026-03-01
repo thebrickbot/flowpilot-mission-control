@@ -114,7 +114,7 @@ export function DashboardSidebar() {
                 style={pathname.startsWith("/board-groups") ? activeStyle : undefined}
               >
                 <Folder className="h-4 w-4" />
-                Board groups
+                Workstreams
               </Link>
               <Link
                 href="/boards"

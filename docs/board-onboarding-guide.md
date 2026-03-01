@@ -7,7 +7,7 @@ Technical reference for agentic developers integrating with Mission Control's bo
 ## Table of Contents
 
 1. [Board Configuration Schema](#1-board-configuration-schema)
-2. [Board Group](#2-board-group)
+2. [Workstream](#2-board-group)
 3. [Board Rules (Governance Flags)](#3-board-rules-governance-flags)
 4. [Webhooks](#4-webhooks)
 5. [Board Onboarding Flow](#5-board-onboarding-flow)
@@ -63,9 +63,9 @@ A **Board** is the primary workspace unit. It groups tasks, agents, and goal met
 
 ---
 
-## 2. Board Group
+## 2. Workstream
 
-Board Groups are logical containers that organize related boards within an organization. When a board's `board_group_id` changes, all agents on all boards in that group are sent a `BOARD GROUP UPDATED` notification.
+Workstreams are logical containers that organize related boards within an organization. When a board's `board_group_id` changes, all agents on all boards in that group are sent a `BOARD GROUP UPDATED` notification.
 
 **Model:** `backend/app/models/board_groups.py` — `BoardGroup(TenantScoped)`
 **Table:** `board_groups`
@@ -80,7 +80,7 @@ Board Groups are logical containers that organize related boards within an organ
 | `created_at` | datetime | auto | UTC creation timestamp |
 | `updated_at` | datetime | auto | UTC last-modified timestamp |
 
-Board groups enable cross-board coordination. Agents can pull group memory and group-level snapshots to understand the broader context of their board's work.
+Workstreams enable cross-board coordination. Agents can pull group memory and group-level snapshots to understand the broader context of their board's work.
 
 ---
 

@@ -198,7 +198,7 @@ export default function NewBoardPage() {
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-900">
-                Board group
+                Workstream
               </label>
               <SearchableSelect
                 ariaLabel="Select board group"

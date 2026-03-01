@@ -87,7 +87,7 @@ export default function BoardGroupsPage() {
     <>
       <DashboardPageLayout
         signedOut={{
-          message: "Sign in to view board groups.",
+          message: "Sign in to view workstreams.",
           forceRedirectUrl: "/board-groups",
         }}
         title="Workstreams"
@@ -114,7 +114,7 @@ export default function BoardGroupsPage() {
             emptyState={{
               title: "No groups yet",
               description:
-                "Create a board group to increase cross-board visibility for agents.",
+                "Create a workstream to increase cross-board visibility for agents.",
               actionHref: "/board-groups/new",
               actionLabel: "Create your first group",
             }}
@@ -134,8 +134,8 @@ export default function BoardGroupsPage() {
             setDeleteTarget(null);
           }
         }}
-        ariaLabel="Delete board group"
-        title="Delete board group"
+        ariaLabel="Delete workstream"
+        title="Delete workstream"
         description={
           <>
             This will remove {deleteTarget?.name}. Boards will be ungrouped.

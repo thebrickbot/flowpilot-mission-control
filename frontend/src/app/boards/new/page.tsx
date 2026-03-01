@@ -201,7 +201,7 @@ export default function NewBoardPage() {
                 Workstream
               </label>
               <SearchableSelect
-                ariaLabel="Select board group"
+                ariaLabel="Select workstream"
                 value={boardGroupId}
                 onValueChange={setBoardGroupId}
                 options={groupOptions}

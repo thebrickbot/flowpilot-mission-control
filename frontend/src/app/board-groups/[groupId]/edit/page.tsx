@@ -280,7 +280,7 @@ export default function EditBoardGroupPage() {
   return (
     <DashboardPageLayout
       signedOut={{
-        message: "Sign in to edit board groups.",
+        message: "Sign in to edit workstreams.",
         forceRedirectUrl: `/board-groups/${groupId ?? ""}/edit`,
       }}
       title={title}

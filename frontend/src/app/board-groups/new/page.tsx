@@ -125,10 +125,10 @@ export default function NewBoardGroupPage() {
   return (
     <DashboardPageLayout
       signedOut={{
-        message: "Sign in to create a board group.",
+        message: "Sign in to create a workstream.",
         forceRedirectUrl: "/board-groups/new",
       }}
-      title="Create board group"
+      title="Create workstream"
       description="Groups help agents discover related work across boards."
     >
       <form

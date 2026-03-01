@@ -736,7 +736,7 @@ export default function BoardGroupDetailPage() {
     <DashboardShell>
       <SignedOut>
         <SignedOutPanel
-          message="Sign in to view board groups."
+          message="Sign in to view workstreams."
           forceRedirectUrl={`/board-groups/${groupId ?? ""}`}
         />
       </SignedOut>

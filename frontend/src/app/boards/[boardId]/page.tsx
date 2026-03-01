@@ -1256,7 +1256,7 @@ export default function BoardDetailPage() {
         const message =
           groupErr instanceof Error
             ? groupErr.message
-            : "Unable to load board group snapshot.";
+            : "Unable to load workstream snapshot.";
         setGroupSnapshotError(message);
         setGroupSnapshot(null);
       }
@@ -3408,7 +3408,7 @@ export default function BoardDetailPage() {
                       ) : groupSnapshot ? (
                         <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm">
                           <p className="font-semibold text-slate-900">
-                            No board group configured
+                            No workstream configured
                           </p>
                           <p className="mt-1 text-sm text-slate-600">
                             Assign this board to a group to give agents

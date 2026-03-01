@@ -494,7 +494,7 @@ export default function DashboardPage() {
                     router.replace(`${pathname}?${params.toString()}`);
                   }}
                   options={boardGroupOptions}
-                  ariaLabel="Dashboard board group filter"
+                  ariaLabel="Dashboard workstream filter"
                   placeholder="All groups"
                   triggerClassName="h-9 min-w-[170px] rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 shadow-sm focus:border-[#2B4A44] focus:ring-2 focus:ring-[#C7DCCD]"
                   contentClassName="rounded-lg border border-slate-200"

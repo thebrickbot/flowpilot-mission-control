@@ -35,8 +35,8 @@ export class FPMCClient {
   }
 
   /** PATCH request */
-  async patch<T = unknown>(path: string, body?: unknown): Promise<T> {
-    const url = this.buildUrl(path);
+  async patch<T = unknown>(path: string, body?: unknown, params?: Record<string, string>): Promise<T> {
+    const url = this.buildUrl(path, params);
     return this.request<T>("PATCH", url, body);
   }
 

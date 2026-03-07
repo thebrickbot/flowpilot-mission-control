@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from datetime import timedelta
 from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID
 
@@ -45,9 +46,17 @@ from app.schemas.gateway_coordination import (
     GatewayMainAskUserResponse,
 )
 from app.schemas.health import AgentHealthStatusResponse
+from app.services.openclaw.constants import OFFLINE_AFTER
+from app.core.time import utcnow
 from app.schemas.pagination import DefaultLimitOffsetPage
 from app.schemas.tags import TagRef
-from app.schemas.tasks import TaskCommentCreate, TaskCommentRead, TaskCreate, TaskRead, TaskUpdate
+from app.schemas.tasks import (
+    TaskCommentCreate,
+    TaskCommentRead,
+    TaskCreate,
+    TaskRead,
+    TaskUpdate,
+)
 from app.services.activity_log import record_activity
 from app.services.openclaw.coordination_service import GatewayCoordinationService
 from app.services.openclaw.policies import OpenClawAuthorizationPolicy
@@ -82,7 +91,9 @@ APPROVAL_STATUS_QUERY = Query(default=None, alias="status")
 AGENT_LEAD_TAGS = cast("list[str | Enum]", ["agent-lead"])
 AGENT_MAIN_TAGS = cast("list[str | Enum]", ["agent-main"])
 AGENT_BOARD_TAGS = cast("list[str | Enum]", ["agent-lead", "agent-worker"])
-AGENT_ALL_ROLE_TAGS = cast("list[str | Enum]", ["agent-lead", "agent-worker", "agent-main"])
+AGENT_ALL_ROLE_TAGS = cast(
+    "list[str | Enum]", ["agent-lead", "agent-worker", "agent-main"]
+)
 
 
 def _coerce_agent_items(items: Sequence[Any]) -> list[Agent]:
@@ -155,7 +166,8 @@ def _agent_board_openapi_hints(
             "Authenticated agent token",
             "Board access is validated before execution",
         ],
-        "x-side-effects": side_effects or ["Read/write side effects vary by endpoint semantics."],
+        "x-side-effects": side_effects
+        or ["Read/write side effects vary by endpoint semantics."],
         "x-negative-guidance": negative_guidance
         or ["Avoid this endpoint when a focused sibling endpoint handles the action."],
         "x-routing-policy": routing_policy
@@ -181,7 +193,9 @@ def _require_board_lead(agent_ctx: AgentAuthContext) -> Agent:
 
 def _guard_task_access(agent_ctx: AgentAuthContext, task: Task) -> None:
     allowed = not (
-        agent_ctx.agent.board_id and task.board_id and agent_ctx.agent.board_id != task.board_id
+        agent_ctx.agent.board_id
+        and task.board_id
+        and agent_ctx.agent.board_id != task.board_id
     )
     OpenClawAuthorizationPolicy.require_board_write_access(allowed=allowed)
 
@@ -242,14 +256,48 @@ def _guard_task_access(agent_ctx: AgentAuthContext, task: Task) -> None:
 def agent_healthz(
     agent_ctx: AgentAuthContext = AGENT_CTX_DEP,
 ) -> AgentHealthStatusResponse:
-    """Return authenticated liveness metadata for the current agent token."""
+    """Return authenticated liveness metadata for the current agent token.
+
+    This endpoint derives health primarily from real OpenClaw runtime state when
+    available, and falls back to the FPMC-stored status otherwise.
+    """
+    # Runtime-derived fields (OpenClaw)
+    runtime_last_seen_at = agent_ctx.agent.last_seen_at
+    runtime_session_id = agent_ctx.agent.openclaw_session_id
+    runtime_status: str | None = None
+    status_source: str | None = None
+
+    if runtime_last_seen_at is not None:
+        now = utcnow()
+        delta = now - runtime_last_seen_at
+        if delta <= timedelta(minutes=5):
+            runtime_status = "online"
+        elif delta <= OFFLINE_AFTER:
+            runtime_status = "stale"
+        else:
+            runtime_status = "offline"
+        status_source = "OpenClaw"
+
+    # UI/configured status (FPMC) for reference
+    ui_status = agent_ctx.agent.status
+
+    # Determine final status with OpenClaw taking precedence when available
+    final_status = runtime_status if runtime_status is not None else ui_status
+    if runtime_status is not None and runtime_status != ui_status:
+        final_status = runtime_status
+
     return AgentHealthStatusResponse(
         ok=True,
         agent_id=agent_ctx.agent.id,
         board_id=agent_ctx.agent.board_id,
         gateway_id=agent_ctx.agent.gateway_id,
-        status=agent_ctx.agent.status,
+        status=final_status,
         is_board_lead=agent_ctx.agent.is_board_lead,
+        runtime_status=runtime_status,
+        runtime_last_seen_at=runtime_last_seen_at,
+        runtime_session_id=runtime_session_id,
+        ui_status=ui_status,
+        status_source=status_source,
     )
 
 
@@ -590,7 +638,10 @@ async def list_tags(
             "model": LLMErrorResponse,
             "description": "Caller is not board lead",
         },
-        404: {"model": LLMErrorResponse, "description": "Assigned target agent does not exist"},
+        404: {
+            "model": LLMErrorResponse,
+            "description": "Assigned target agent does not exist",
+        },
         409: {
             "model": LLMErrorResponse,
             "description": "Dependency or assignment validation failed",

@@ -25,6 +25,14 @@ const AgentsHealthCheckInput = {
   board_id: z.string().uuid().optional().describe("Scope to a board"),
 };
 
+const AgentsUpdatePolicyInput = {
+  agent_id: z.string().uuid().describe("Agent UUID"),
+  identity_template: z.string().min(1).optional().describe("Replacement identity template"),
+  soul_template: z.string().min(1).optional().describe("Replacement soul template"),
+  guardrails: z.string().min(1).optional().describe("Guardrails markdown to append to the soul template as desired policy text"),
+  force: z.boolean().optional().describe("Force reprovision after update"),
+};
+
 interface AgentRecord {
   id: string;
   name: string;
@@ -32,6 +40,24 @@ interface AgentRecord {
   is_board_lead: boolean;
   board_id: string | null;
   last_seen_at: string | null;
+}
+
+interface AgentPolicyFields {
+  identity_template?: string;
+  soul_template?: string;
+}
+
+function mergeSoulTemplateWithGuardrails(
+  soulTemplate: string | undefined,
+  guardrails: string | undefined,
+): string | undefined {
+  const soul = soulTemplate?.trim();
+  const policy = guardrails?.trim();
+  if (!policy) return soul;
+  const section = `## Guardrails\n${policy}`;
+  if (!soul) return section;
+  if (soul.includes("## Guardrails")) return soul;
+  return `${soul}\n\n${section}`;
 }
 
 export function registerAgentTools(server: McpServer, client: FPMCClient) {
@@ -110,6 +136,46 @@ export function registerAgentTools(server: McpServer, client: FPMCClient) {
         };
 
         return toolSuccess(summary);
+      } catch (err) {
+        return catchTool(err);
+      }
+    },
+  );
+
+  server.tool(
+    "agents_update_policy",
+    "Update FPMC-side desired agent policy/templates. This is a control-plane write that should sync through to OpenClaw runtime state.",
+    AgentsUpdatePolicyInput,
+    async (args) => {
+      try {
+        const needsExistingSoul = Boolean(args.guardrails && !args.soul_template);
+        const existing = needsExistingSoul
+          ? await client.get<AgentPolicyFields>(`/api/v1/agents/${args.agent_id}`)
+          : undefined;
+
+        const mergedSoul = mergeSoulTemplateWithGuardrails(
+          args.soul_template ?? existing?.soul_template,
+          args.guardrails,
+        );
+
+        const payload: AgentPolicyFields = {};
+        if (args.identity_template) payload.identity_template = args.identity_template.trim();
+        if (mergedSoul) payload.soul_template = mergedSoul;
+
+        if (!payload.identity_template && !payload.soul_template) {
+          throw new Error("Provide at least one policy field: identity_template, soul_template, or guardrails");
+        }
+
+        const result = await client.patch(
+          `/api/v1/agents/${args.agent_id}`,
+          payload,
+          args.force === true ? { force: "true" } : undefined,
+        );
+        return toolSuccess({
+          updated: true,
+          write_through_target: "openclaw_runtime_sync_pending",
+          result,
+        });
       } catch (err) {
         return catchTool(err);
       }

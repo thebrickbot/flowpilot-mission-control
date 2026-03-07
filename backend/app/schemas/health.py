@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from uuid import UUID
 
 from pydantic import Field
@@ -40,4 +42,28 @@ class AgentHealthStatusResponse(HealthStatusResponse):
     is_board_lead: bool = Field(
         description="Whether the authenticated agent is the board lead.",
         examples=[False],
+    )
+    # New runtime-derived fields (OpenClaw-backed state)
+    runtime_status: str | None = Field(
+        default=None,
+        description="Derive runtime health from the OpenClaw runtime state.",
+        examples=["online", "offline", "stale"],
+    )
+    runtime_last_seen_at: datetime | None = Field(
+        default=None,
+        description="Last seen timestamp from the OpenClaw runtime heartbeat.",
+    )
+    runtime_session_id: str | None = Field(
+        default=None,
+        description="OpenClaw session id associated with the agent runtime.",
+        examples=["sess-abc123"],
+    )
+    ui_status: str | None = Field(
+        default=None,
+        description="The UI/configured status for the agent (FPMC).",
+    )
+    status_source: str | None = Field(
+        default=None,
+        description="Source of truth for the current health status.",
+        examples=["OpenClaw", "FPMC"],
     )

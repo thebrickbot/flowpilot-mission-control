@@ -12,7 +12,7 @@ import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
 
@@ -66,6 +66,7 @@ class ProvisionOptions:
 
 _ROLE_SOUL_MAX_CHARS = 24_000
 _ROLE_SOUL_WORD_RE = re.compile(r"[a-z0-9]+")
+_POLICY_SYNC_FILE_NAMES = frozenset({"SOUL.md", "AGENTS.md"})
 
 
 def _is_missing_session_error(exc: OpenClawGatewayError) -> bool:
@@ -732,6 +733,22 @@ class BaseAgentLifecycleManager(ABC):
         _ = agent
         return set()
 
+    async def _existing_file_content(self, *, agent_id: str, name: str) -> str | None:
+        payload = await self._control_plane.get_agent_file_payload(agent_id=agent_id, name=name)
+        if isinstance(payload, str):
+            return payload
+        if isinstance(payload, dict):
+            dict_payload = cast(dict[str, Any], payload)
+            direct_content = dict_payload.get("content")
+            if isinstance(direct_content, str):
+                return direct_content
+            file_obj = dict_payload.get("file")
+            if isinstance(file_obj, dict):
+                nested_content = file_obj.get("content")
+                if isinstance(nested_content, str):
+                    return nested_content
+        return None
+
     async def _set_agent_files(
         self,
         *,
@@ -759,6 +776,20 @@ class BaseAgentLifecycleManager(ABC):
                 entry = existing_files.get(name)
                 if entry and not bool(entry.get("missing")):
                     continue
+
+            if (
+                action == "update"
+                and name in _POLICY_SYNC_FILE_NAMES
+                and (entry := existing_files.get(name))
+                and not bool(entry.get("missing"))
+            ):
+                try:
+                    existing_content = await self._existing_file_content(agent_id=agent_id, name=name)
+                except OpenClawGatewayError:
+                    existing_content = None
+                if existing_content is not None and existing_content.strip() == content.strip():
+                    continue
+
             try:
                 await self._control_plane.set_agent_file(
                     agent_id=agent_id,

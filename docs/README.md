@@ -12,6 +12,7 @@ This folder is the starting point for Mission Control documentation.
 - [Troubleshooting](./troubleshooting/README.md)
 - [Gateway WebSocket protocol](./openclaw_gateway_ws.md)
 - [OpenClaw baseline configuration](./openclaw_baseline_config.md)
++ - OpenClaw-FPMC source-of-truth contract: ./architecture/openclaw-fpmc-source-of-truth.md
 
 ## Status
 

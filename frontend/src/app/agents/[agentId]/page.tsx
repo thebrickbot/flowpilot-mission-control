@@ -34,6 +34,7 @@ import type {
 } from "@/api/generated/model";
 import { Markdown } from "@/components/atoms/Markdown";
 import { StatusPill } from "@/components/atoms/StatusPill";
+import { AgentHealthStatus } from "@/components/agents/AgentHealthStatus";
 import { DashboardSidebar } from "@/components/organisms/DashboardSidebar";
 import { DashboardShell } from "@/components/templates/DashboardShell";
 import { Button } from "@/components/ui/button";
@@ -294,28 +295,7 @@ export default function AgentDetailPage() {
                   </div>
 
                   <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)] p-5">
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-quiet">
-                        Health
-                      </p>
-                      <StatusPill status={agentStatus} />
-                    </div>
-                    <div className="mt-4 grid gap-3 text-sm text-muted">
-                      <div className="flex items-center justify-between">
-                        <span>Heartbeat window</span>
-                        <span>{formatRelative(agent.last_seen_at)}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Session binding</span>
-                        <span>
-                          {agent.openclaw_session_id ? "Bound" : "Unbound"}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Status</span>
-                        <span className="text-strong">{agentStatus}</span>
-                      </div>
-                    </div>
+                    <AgentHealthStatus agent={agent} />
                   </div>
                 </div>
 
